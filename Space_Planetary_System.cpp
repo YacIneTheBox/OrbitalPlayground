@@ -33,6 +33,7 @@ void Editing(CelestBody CBodyList[]);
 void simpleDelete(CelestBody *b);
 void Mooving(CelestBody CBodyList[],bool isMoving);
 void CollisionChecking(CelestBody c[]);
+void BorderScreenChecking(CelestBody c[]);
 
 int main()
 {
@@ -73,7 +74,7 @@ int main()
 
         Editing(CBodyList); // increasing size 
 
-
+        BorderScreenChecking(CBodyList);
 
         Vector2 force = { 0,0 };
         
@@ -106,12 +107,36 @@ int main()
             }
         }
 
-
-
         EndDrawing();
     }
     CloseWindow();
     return 0;
+}
+
+void BorderScreenChecking(CelestBody c[]) {
+    for (int i = 0; i < MAX_INIT_BODY; i++) {
+        if (!c[i].deleted) {
+            // horizontal check
+            if (c[i].pos.x < -c[i].size) {
+                c[i].pos.x = screenWidth + c[i].size;
+
+            }
+            if (c[i].pos.x > screenWidth + c[i].size) {
+                c[i].pos.x = -c[i].size;
+
+            }
+            // Vertical check
+            if (c[i].pos.y > screenHeight + c[i].size) {
+                c[i].pos.y = -c[i].size;
+
+            }
+            if (c[i].pos.y < -c[i].size) {
+                c[i].pos.y = screenHeight + c[i].size;
+
+            }
+        }
+        
+    }
 }
 
 void CollisionChecking(CelestBody c[]) {
@@ -196,8 +221,6 @@ void Mooving(CelestBody CBodyList[],bool isMoving){
                     CBodyList[i].velocity.x += inertia.x;
                     CBodyList[i].velocity.y += inertia.y;
                 }
-
-
             }
         }
     }
